@@ -1,14 +1,19 @@
 import pygame, random, sys
 from math import sqrt
 
-class Game2048(pygame.sprite.Sprite):
+
+# 出现随机数，则建立一个线程，将game2048类实例传进去，为位置赋值，调用方块函数，调用文本函数
+# 两个数相加之前先获取两个数的坐标，为fir和sec赋值，调用移动函数，然后释放两个数的线程 
+# 为新出现的和创建新的类实例，为文本和位置赋值，调用文本显示函数
+# 不相加的数也要跟随移动，其第二个等待被填充的位置为列表内下一个位置
+class Game2048(pygame):
     #游戏初始化
     def __init__(self):
-        pygame.sprite.Sprite.__init__(self)
+        
         # 初始化字体模块
-        pygame.font.init()
+        self.font.init()
         # 设置字体、大小
-        self.number = pygame.font.SysFont('arial', 50)
+        self.number = self.font.SysFont('arial', 50)
         # 是否加粗，是
         self.number.set_bold(True)
         # 位置
@@ -47,7 +52,7 @@ class Game2048(pygame.sprite.Sprite):
 
     def rectDisplay(self):
         #绘制矩形
-        pygame.draw.rect(screen,self.color,[self.Heng,self.Gao,130,130],0)
+        self.draw.rect(screen,self.color,[self.Heng,self.Gao,130,130],0)
 #        rect01 = pygame.draw.rect(screen,[255,0,0],[JianJu*2+length,JianJu,130,130],0)
 #        rect02 = pygame.draw.rect(screen,[255,0,0],[(JianJu*1.5+length)*2,JianJu,130,130],0)
 #        rect03 = pygame.draw.rect(screen,[255,0,0],[JianJu*4+length*3,JianJu,130,130],0)
@@ -105,7 +110,7 @@ class Game2048(pygame.sprite.Sprite):
 
 
 
-
+# 随机出现一个数字，画一个方块，记录位置。相加后，记录结果位置。由此得到移动先后的两个位置
 
     def move(self):
         #'设置好两对数字坐标，和一对方向坐标，然后再调用move，向右向下为正值，无移动为零’
@@ -116,40 +121,48 @@ class Game2048(pygame.sprite.Sprite):
         way = self.ways
         if way[0] > 0:
             start, end, length = x, a, 10
-            for loop in range(start, end+1, length):
+            for loop in range(start, end, length):
             # 延时，制造动画效果
-                pygame.time.delay(200)
-                pygame.draw.rect(screen,[105, 105, 105], [start, b, 130, 130],0)
-            # 如果根据坐标位置能查询结果，则运行如下代码
-            self.numDisplay(find(x, y))
+                self.time.delay(200)
+                self.draw.rect(screen, [105, 105, 105], [loop, b, 130, 130], 0)
+                self.Heng += 10
+                self.rectDisplay()
+                self.numDisplay()
+            
+# self.numDisplay()    调用完移动函数以后，创建新数字的类和线程，覆盖上去
             
 
         elif way[1] > 0:
             start, end, length = y, b, 10
-            for loop in range(start, end+1, length):
-            # 延时，制造动画效果
-            pygame.time.delay(200)
-            pygame.draw.rect(screen,[105, 105, 105], [start, a, 130, 130],0)
-            # 如果根据坐标位置能查询结果，则运行如下代码
-            self.numDisplay(find(x, y))
+            for loop in range(start, end, length):
+                # 延时，制造动画效果
+                self.time.delay(200)
+                self.draw.rect(screen, [105, 105, 105], [start, a, 130, 130], 0)
+                self.Gao += 10
+                self.rectDisplay()
+                self.numDisplay()
 
         elif way[0] < 0:
             start, end, length = a, x, -10
-            for loop in range(start, end+1, length):
-            # 延时，制造动画效果
-            pygame.time.delay(200)
-            pygame.draw.rect(screen,[105, 105, 105], [start, y, 130, 130], 0)
-            # 如果根据坐标位置能查询结果，则运行如下代码
-            self.numDisplay(find(a, b))
+            for loop in range(start, end+, length):
+                # 延时，制造动画效果
+                self.time.delay(200)
+                self.draw.rect(screen,[105, 105, 105], [start, y, 130, 130], 0)
+                self.Heng -= 10
+                self.rectDisplay()
+           ## # 如果根据坐标位置能查询结果，则运行如下代码
+           ##self.numDisplay(find(a, b))
 
         elif way[1] < 0:
             start, end, length = b, y, -10
-            for loop in range(start, end+1, length):    
-            # 延时，制造动画效果
-            pygame.time.delay(200)
-            pygame.draw.rect(screen,[105, 105, 105], [start, x, 130, 130], 0)
-            # 如果根据坐标位置能查询结果，则运行如下代码
-            self.numDisplay(find(a, b))
+            for loop in range(start, end, length):    
+                # 延时，制造动画效果
+                self.time.delay(200)
+                self.draw.rect(screen,[105, 105, 105], [start, x, 130, 130], 0)
+                self.Gao -= 10
+                self.rectDisplay()
+            # #如果根据坐标位置能查询结果，则运行如下代码
+            ##self.numDisplay()
 
         
     def color(self):
