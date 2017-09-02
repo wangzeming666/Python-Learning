@@ -197,15 +197,8 @@ clock = pygame.time.Clock()
 
 while True:
     clock.tick(30)
-    # 传递位置参数
-    G.WeiZhi(0,0)
-    # 根据位置参数绘制矩形
-    G.rectDisplay()
-    # 根据位置参数绘制数字 ， 另外我想创建一个数字类，可以初始化数字位置参数
-    G.WeiZhi(0,0)
-    G.numDisplay('1')
-    # 传递数字num，位置进函数打印到屏幕
-    #G.Display(str(num),20,20)
+    
+    # 在这里调用各种函数
 
 
     # 检测事件，  如果前面程序太耗费时间，则需要上锁，在一定时间后解锁
@@ -226,7 +219,7 @@ while True:
             sys.exit()
 
     #刷新画面
-    pygame.display.update()
+    #pygame.display.update()
 
 
 
