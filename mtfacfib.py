@@ -8,7 +8,7 @@ def fib(x):
 
 def fac(x):
     sleep(0.1)
-    if x < 2:return
+    if x < 2:return 1
     return (x * fac(x-1))
 
 def sum(x):
@@ -20,6 +20,28 @@ funcs = [fib, fac, sum]
 n = 12
 
 def main():
-    nfuncs = range(len(func))
+    nfuncs = range(len(funcs))
 
-    print('*** SINGLE THREAD'
+    print('*** SINGLE THREAD')
+    for i in nfuncs:
+        print('starting %s at:%s' %(funcs[i].__name__, ctime()))
+        print(funcs[i](n))
+        print('%s finished at:%s' %(funcs[i].__name__, ctime()))
+
+    print('\n *** MULTIPLE THREADS')
+    threads = []
+    for i in nfuncs:
+        t = MyThread(funcs[i], (n,), funcs[i].__name__)
+        threads.append(t)
+
+    for i in nfuncs:
+        threads[i].start()
+
+    for i in nfuncs:
+        threads[i].join()
+        print(threads[i].getResult())
+
+    print('all DONE')
+
+if __name__ == '__main__':
+    main()
