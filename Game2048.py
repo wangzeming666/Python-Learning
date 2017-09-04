@@ -1,14 +1,20 @@
 import pygame, random, sys
 from math import sqrt
+import threading
+# 从Game2048 和
 
-class Game2048(pygame.sprite.Sprite):
+# 出现随机数，创建新实例，调用位置函数为位置赋值，调用方块函数，调用文本函数
+# 出现键盘事件，检测是否可以移动（溢出边界），为所有待移动实例建立线程，调用移动函数，移动结束释放线程，删除无用实例
+# 为新出现的随机数和相加数的和创建新的类实例，调用位置函数，调用方块函数，递归调用文本函数为所有文本重新绘制
+
+class Game2048(pygame):
     #游戏初始化
     def __init__(self):
-        pygame.sprite.Sprite.__init__(self)
+        
         # 初始化字体模块
-        pygame.font.init()
+        self.font.init()
         # 设置字体、大小
-        self.number = pygame.font.SysFont('arial', 50)
+        self.number = self.font.SysFont('arial', 50)
         # 是否加粗，是
         self.number.set_bold(True)
         # 位置
@@ -47,7 +53,7 @@ class Game2048(pygame.sprite.Sprite):
 
     def rectDisplay(self):
         #绘制矩形
-        pygame.draw.rect(screen,self.color,[self.Heng,self.Gao,130,130],0)
+        self.draw.rect(screen,self.color,[self.Heng,self.Gao,130,130],0)
 #        rect01 = pygame.draw.rect(screen,[255,0,0],[JianJu*2+length,JianJu,130,130],0)
 #        rect02 = pygame.draw.rect(screen,[255,0,0],[(JianJu*1.5+length)*2,JianJu,130,130],0)
 #        rect03 = pygame.draw.rect(screen,[255,0,0],[JianJu*4+length*3,JianJu,130,130],0)
@@ -105,7 +111,7 @@ class Game2048(pygame.sprite.Sprite):
 
 
 
-
+# 随机出现一个数字，画一个方块，记录位置。相加后，记录结果位置。由此得到移动先后的两个位置
 
     def move(self):
         #'设置好两对数字坐标，和一对方向坐标，然后再调用move，向右向下为正值，无移动为零’
@@ -116,40 +122,48 @@ class Game2048(pygame.sprite.Sprite):
         way = self.ways
         if way[0] > 0:
             start, end, length = x, a, 10
-            for loop in range(start, end+1, length):
+            for loop in range(start, end, length):
             # 延时，制造动画效果
-                pygame.time.delay(200)
-                pygame.draw.rect(screen,[105, 105, 105], [start, b, 130, 130],0)
-            # 如果根据坐标位置能查询结果，则运行如下代码
-            self.numDisplay(find(x, y))
+                self.time.delay(200)
+                self.draw.rect(screen, [105, 105, 105], [loop, b, 130, 130], 0)
+                self.Heng += 10
+                self.rectDisplay()
+                self.numDisplay()
+            
+# self.numDisplay()    调用完移动函数以后，创建新数字的类和线程，覆盖上去
             
 
         elif way[1] > 0:
             start, end, length = y, b, 10
-            for loop in range(start, end+1, length):
-            # 延时，制造动画效果
-            pygame.time.delay(200)
-            pygame.draw.rect(screen,[105, 105, 105], [start, a, 130, 130],0)
-            # 如果根据坐标位置能查询结果，则运行如下代码
-            self.numDisplay(find(x, y))
+            for loop in range(start, end, length):
+                # 延时，制造动画效果
+                self.time.delay(200)
+                self.draw.rect(screen, [105, 105, 105], [start, a, 130, 130], 0)
+                self.Gao += 10
+                self.rectDisplay()
+                self.numDisplay()
 
         elif way[0] < 0:
             start, end, length = a, x, -10
-            for loop in range(start, end+1, length):
-            # 延时，制造动画效果
-            pygame.time.delay(200)
-            pygame.draw.rect(screen,[105, 105, 105], [start, y, 130, 130], 0)
-            # 如果根据坐标位置能查询结果，则运行如下代码
-            self.numDisplay(find(a, b))
+            for loop in range(start, end+, length):
+                # 延时，制造动画效果
+                self.time.delay(200)
+                self.draw.rect(screen,[105, 105, 105], [start, y, 130, 130], 0)
+                self.Heng -= 10
+                self.rectDisplay()
+           ## # 如果根据坐标位置能查询结果，则运行如下代码
+           ##self.numDisplay(find(a, b))
 
         elif way[1] < 0:
             start, end, length = b, y, -10
-            for loop in range(start, end+1, length):    
-            # 延时，制造动画效果
-            pygame.time.delay(200)
-            pygame.draw.rect(screen,[105, 105, 105], [start, x, 130, 130], 0)
-            # 如果根据坐标位置能查询结果，则运行如下代码
-            self.numDisplay(find(a, b))
+            for loop in range(start, end, length):    
+                # 延时，制造动画效果
+                self.time.delay(200)
+                self.draw.rect(screen,[105, 105, 105], [start, x, 130, 130], 0)
+                self.Gao -= 10
+                self.rectDisplay()
+            # #如果根据坐标位置能查询结果，则运行如下代码
+            ##self.numDisplay()
 
         
     def color(self):
@@ -183,15 +197,8 @@ clock = pygame.time.Clock()
 
 while True:
     clock.tick(30)
-    # 传递位置参数
-    G.WeiZhi(0,0)
-    # 根据位置参数绘制矩形
-    G.rectDisplay()
-    # 根据位置参数绘制数字 ， 另外我想创建一个数字类，可以初始化数字位置参数
-    G.WeiZhi(0,0)
-    G.numDisplay('1')
-    # 传递数字num，位置进函数打印到屏幕
-    #G.Display(str(num),20,20)
+    
+    # 在这里调用各种函数
 
 
     # 检测事件，  如果前面程序太耗费时间，则需要上锁，在一定时间后解锁
@@ -212,7 +219,7 @@ while True:
             sys.exit()
 
     #刷新画面
-    pygame.display.update()
+    #pygame.display.update()
 
 
 
