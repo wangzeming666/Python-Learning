@@ -12,18 +12,19 @@ loops = (randrange(2, 5) for x in range(randrange(3,7)))
 remaining = CleanOutPutSet()
 
 def loop(nsec):
-    lock.acquire()
-    myname = current_thread().name
     
-    remaining.add(myname)
-    print('\n[%s] Started %s' % (ctime(), myname))
-    lock.release()
+    myname = current_thread().name
+    with lock:
+        
+        remaining.add(myname)
+        print('\n[%s] Started %s' % (ctime(), myname))
+    
     sleep(nsec)
-    lock.acquire()
-    remaining.remove(myname)
-    print('\n[%s] Completed %s (%d secs)' %(ctime(), myname, nsec))
-    print('\n    (remaining: %s)' % (remaining or 'NONE'))
-    lock.release()
+    with lock:
+        remaining.remove(myname)
+        print('\n[%s] Completed %s (%d secs)' %(ctime(), myname, nsec))
+        print('\n    (remaining: %s)' % (remaining or 'NONE'))
+    
 
 def _main():
     for pause in loops:
@@ -33,8 +34,4 @@ def _main():
 
 
 
-_main()                                        
-
-
-
-
+_main()                     
