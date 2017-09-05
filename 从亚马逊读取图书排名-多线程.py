@@ -3,8 +3,8 @@ from re import compile
 from threading import Thread
 from time import ctime
 from urllib.request import urlopen as uopen
-
-REGEX = compile('#([\d,]+) in Books')
+import pdb
+REGEX = compile(b'#([\d,]+) in Books')
 AMZN = 'http://amazon.com/dp/'
 ISBNs = {
     '0132269937': 'Core Python Programming',
@@ -13,9 +13,9 @@ ISBNs = {
     }
 def getRanking(isbn):
     page = uopen('%s%s' %(AMZN, isbn))
-    data = page.read().decode('utf-8')
+    data = page.read()
     page.close()
-    return REGEX.findall(data)[0]
+    return REGEX.findall(data)[0].decode('utf-8')
 
 def _showRanking(isbn):
     print('- %r ranked %s' %(ISBNs[isbn], getRanking(isbn)))
